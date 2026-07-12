@@ -1,11 +1,16 @@
-from flask import Flask
+from flask import Flask, Blueprint, jsonify
+from flask_cors import CORS
 from models import db
 from config import config
 from extension import jwt, login_manager
+from routes.auth import auth
 
 app = Flask(__name__)
+CORS(app,origins=["http://localhost:8080"])
 # app configuration 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config["JWT_SECRET_KEY"] = "my-super-secret-jwt-key"
+print(app.config.get("JWT_SECRET_KEY"))
 app.config.from_object(config)
 
 # Initializing 
@@ -15,7 +20,8 @@ db.init_app(app) #database with flask
 with app.app_context(): 
     db.create_all()
 
-
+# auth routes executing 
+app.register_blueprint(auth)
 
 # final main app execution 
 if __name__ =="__main__":
