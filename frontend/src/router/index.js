@@ -4,6 +4,10 @@ import Home from "../Views/Home.vue";
 import Login from "../Views/LoginPage.vue";
 import StudentRegister from "../Views/StudentRegister.vue";
 import CompanyRegister from "../Views/CompanyRegister.vue";
+import AdminDashboard from "../Views/Admin/AdminDashboard.vue";
+import CompanyDashboard from "../Views/Company/CompanyDashboard.vue";
+import CreateDrive from "../Views/Company/CreateDrive.vue";
+import ViewApplicants from "../Views/Company/ViewApplicants.vue";
 
 const routes = [
   {
@@ -22,6 +26,22 @@ const routes = [
     path: "/company/register",
     component: CompanyRegister,
   },
+  {
+    path: "/admin/dashboard",
+    component: AdminDashboard,
+  },
+  {
+  path: "/company/dashboard",
+  component: CompanyDashboard,
+},
+{
+  path: "/company/drive/create",
+  component: CreateDrive,
+},
+{
+  path: "/company/drive/:id/applicants",
+  component: ViewApplicants,
+},
 ];
 
 const router = createRouter({
@@ -30,3 +50,4 @@ const router = createRouter({
 });
 
 export default router;
+

@@ -1,5 +1,5 @@
 from app import app
-from models import db, Admin
+from models import db, Admin,Company
 from werkzeug.security import generate_password_hash
 
 with app.app_context():
@@ -11,6 +11,11 @@ with app.app_context():
         db.session.add_all([admin1,admin2])
         db.session.commit()
         print('Admin data seeded')
+
+    company = Company.query.filter_by(name="amazon").first()
+    company.is_approved = True
+    db.session.commit()
+    
 '''
 
     admin1 = Admin.query.filter_by(name='admin1').first()

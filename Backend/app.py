@@ -4,6 +4,8 @@ from models import db
 from config import config
 from extension import jwt, login_manager
 from routes.auth import auth
+#from routes.admin import admin
+from routes.company import company
 
 app = Flask(__name__)
 CORS(app,origins=["http://localhost:8080"])
@@ -22,6 +24,8 @@ with app.app_context():
 
 # auth routes executing 
 app.register_blueprint(auth)
+#app.register_blueprint(admin)
+app.register_blueprint(company)
 
 # final main app execution 
 if __name__ =="__main__":
