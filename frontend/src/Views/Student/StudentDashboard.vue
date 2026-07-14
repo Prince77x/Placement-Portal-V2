@@ -11,9 +11,12 @@
       <div class="actions">
         <button @click="goToProfile">Profile</button>
         <button @click="goToJobs">Browse Jobs</button>
+        <button @click="exportApplications">Export My Applications</button>
         <button @click="logout">Logout</button>
       </div>
     </div>
+
+    <p v-if="exportStatus">{{ exportStatus }}</p>
 
     <!-- Organizations -->
     <div class="card">
@@ -84,7 +87,10 @@ export default {
     return {
       student: {},
       companies: [],
-      applications: []
+      applications: [],
+      exportStatus: "",
+      pollInterval: null,
+      pollAttempts: 0
     };
   },
 
@@ -117,6 +123,62 @@ export default {
     logout() {
       localStorage.removeItem("token");
       this.$router.push("/");
+    },
+
+    exportApplications() {
+
+      if (this.pollInterval) {
+        clearInterval(this.pollInterval);
+      }
+
+      this.exportStatus = "Starting export...";
+      this.pollAttempts = 0;
+
+      api.post("/student/export").then((res) => {
+        const taskId = res.data.task_id;
+        this.pollExportStatus(taskId);
+      });
+    },
+
+    pollExportStatus(taskId) {
+      this.exportStatus = "Generating your file, please wait...";
+
+      this.pollInterval = setInterval(() => {
+
+        this.pollAttempts++;
+
+        if (this.pollAttempts > 30) {
+          clearInterval(this.pollInterval);
+          this.exportStatus = "Taking too long. Is the Celery worker running?";
+          return;
+        }
+
+        api.get(`/task/${taskId}/status`).then((res) => {
+
+          if (res.data.state === "SUCCESS") {
+            clearInterval(this.pollInterval);
+            this.exportStatus = "Export ready! Downloading...";
+
+            api.get(`/task/${taskId}/download`, { responseType: "blob" }).then((downloadRes) => {
+              const url = window.URL.createObjectURL(new Blob([downloadRes.data]));
+              const link = document.createElement("a");
+              link.href = url;
+              link.setAttribute("download", "export.csv");
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+
+              this.exportStatus = "Export downloaded!";
+            });
+          }
+
+          if (res.data.state === "FAILURE") {
+            clearInterval(this.pollInterval);
+            this.exportStatus = "Export failed: " + res.data.error;
+          }
+
+        });
+      }, 2000);
     }
 
   },

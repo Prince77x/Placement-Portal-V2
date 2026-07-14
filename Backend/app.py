@@ -1,4 +1,6 @@
 from flask import Flask, Blueprint, jsonify
+from celery_app import celery
+
 from flask_cors import CORS
 from models import db
 from config import config
@@ -7,6 +9,7 @@ from routes.auth import auth
 from routes.admin import admin
 from routes.company import company
 from routes.student import student
+from routes.export import export
 
 app = Flask(__name__)
 CORS(app,origins=["http://localhost:8080"])
@@ -23,11 +26,21 @@ db.init_app(app) #database with flask
 with app.app_context(): 
     db.create_all()
 
+celery.conf.update(app.config)
+
+class ContextTask(celery.Task):
+    def __call__(self, *args, **kwargs):
+        with app.app_context():
+            return self.run(*args, **kwargs)
+
+celery.Task = ContextTask
+
 # auth routes executing 
 app.register_blueprint(auth)
 app.register_blueprint(admin)
 app.register_blueprint(company)
 app.register_blueprint(student)
+app.register_blueprint(export)
 
 # final main app execution 
 if __name__ =="__main__":
