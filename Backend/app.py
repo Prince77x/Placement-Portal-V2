@@ -4,7 +4,7 @@ from models import db
 from config import config
 from extension import jwt, login_manager
 from routes.auth import auth
-#from routes.admin import admin
+from routes.admin import admin
 from routes.company import company
 from routes.student import student
 
@@ -25,7 +25,7 @@ with app.app_context():
 
 # auth routes executing 
 app.register_blueprint(auth)
-#app.register_blueprint(admin)
+app.register_blueprint(admin)
 app.register_blueprint(company)
 app.register_blueprint(student)
 

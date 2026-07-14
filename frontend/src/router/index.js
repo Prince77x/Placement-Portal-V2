@@ -15,6 +15,9 @@ import ApplicationDetail from "../Views/Student/ApplicationDetail.vue";
 //import Profile from "../Views/Student/StudentProfile.vue/index.js";
 import CompanyDetail from "../Views/Student/CompanyDetail.vue";
 import StudentProfile from "@/Views/Student/StudentProfile.vue";
+import AdminDriveDetails from "../Views/Admin/AdminDriveDetails.vue";
+import AdminApplicationDetails from "../Views/Admin/AdminApplicationDetails.vue";
+
 
 const routes = [
   {
@@ -72,6 +75,14 @@ const routes = [
 {
   path: "/student/company/:id",
   component: CompanyDetail,
+},
+{
+  path: "/admin/drive/:id",
+  component: AdminDriveDetails,
+},
+{
+  path: "/admin/application/:id",
+  component: AdminApplicationDetails,
 },
 ];
 
