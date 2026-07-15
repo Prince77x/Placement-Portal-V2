@@ -1,13 +1,14 @@
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity
 from flask import Blueprint, jsonify, request
 from models import Student, Company, Job, Application, db
 from cache import cache
+from utils import role_required
 
 student = Blueprint('student', __name__)
 
 
 @student.route("/api/student/dashboard", methods=["GET"])
-@jwt_required()
+@role_required("student")
 def student_dashboard():
 
     current_user = get_jwt_identity()
@@ -53,7 +54,7 @@ def student_dashboard():
 
 # View a single company and its open jobs
 @student.route("/api/student/company/<int:id>", methods=["GET"])
-@jwt_required()
+@role_required("student")
 def company_detail(id):
 
     company = Company.query.get_or_404(id)
@@ -83,7 +84,7 @@ def company_detail(id):
 
 # Search / list job postings
 @student.route("/api/student/jobs", methods=["GET"])
-@jwt_required()
+@role_required("student")
 @cache.cached(timeout=60, query_string=True)
 def list_jobs():
 
@@ -112,7 +113,7 @@ def list_jobs():
 
 # View full details of one job/drive
 @student.route("/api/student/job/<int:id>", methods=["GET"])
-@jwt_required()
+@role_required("student")
 def view_drive(id):
 
     job = Job.query.get_or_404(id)
@@ -133,7 +134,7 @@ def view_drive(id):
 
 # Apply for a job
 @student.route("/api/student/job/<int:id>/apply", methods=["POST"])
-@jwt_required()
+@role_required("student")
 def apply_job(id):
 
     current_user = get_jwt_identity()
@@ -161,7 +162,7 @@ def apply_job(id):
 
 # View one application in detail (status + placement info if selected)
 @student.route("/api/student/application/<int:id>", methods=["GET"])
-@jwt_required()
+@role_required("student")
 def view_application(id):
 
     application = Application.query.get_or_404(id)
@@ -188,7 +189,7 @@ def view_application(id):
 
 # Update profile
 @student.route("/api/student/profile", methods=["PUT"])
-@jwt_required()
+@role_required("student")
 def update_profile():
 
     current_user = get_jwt_identity()

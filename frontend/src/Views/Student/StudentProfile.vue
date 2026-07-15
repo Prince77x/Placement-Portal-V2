@@ -1,20 +1,60 @@
 <template>
   <div class="container">
 
-    <h1>My Profile</h1>
-
     <div class="card">
 
-      <label>Education</label>
-      <input v-model="education" />
+      <div class="header">
 
-      <label>Skills</label>
-      <input v-model="skills" placeholder="e.g. Python, SQL, React" />
+        <h2>My Profile</h2>
 
-      <label>Resume Link</label>
-      <input v-model="resume" placeholder="link to resume" />
+        <button
+          class="back-btn"
+          @click="goBack"
+        >
+          ← Back
+        </button>
 
-      <button @click="saveProfile">Save</button>
+      </div>
+
+      <div class="form-group">
+
+        <label>Education</label>
+
+        <input
+          v-model="education"
+          placeholder="Enter your education"
+        />
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Skills</label>
+
+        <input
+          v-model="skills"
+          placeholder="e.g. Python, SQL, React"
+        />
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Resume Link</label>
+
+        <input
+          v-model="resume"
+          placeholder="Paste your resume link"
+        />
+
+      </div>
+
+      <button
+        class="save-btn"
+        @click="saveProfile"
+      >
+        Save Profile
+      </button>
 
     </div>
 
@@ -38,21 +78,32 @@ export default {
   methods: {
 
     async getProfile() {
+
       const res = await api.get("/student/dashboard");
 
       this.education = res.data.student.education;
       this.skills = res.data.student.skills;
       this.resume = res.data.student.resume;
+
     },
 
     saveProfile() {
+
       api.put("/student/profile", {
         education: this.education,
         skills: this.skills,
         resume: this.resume
+
       }).then(() => {
+
         alert("Profile updated");
+
       });
+
+    },
+
+    goBack() {
+      this.$router.go(-1);
     }
 
   },
@@ -68,31 +119,72 @@ export default {
 
 .container{
     width:60%;
-    margin:auto;
+    margin:40px auto;
 }
 
 .card{
     border:1px solid #ddd;
-    padding:20px;
-    margin-top:20px;
+    border-radius:8px;
+    padding:25px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.08);
+    background:white;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.form-group{
+    margin-bottom:18px;
 }
 
 label{
     display:block;
-    margin-top:12px;
+    margin-bottom:6px;
     font-weight:bold;
 }
 
 input{
     width:100%;
-    padding:8px;
-    margin-top:5px;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:5px;
+    box-sizing:border-box;
 }
 
-button{
-    margin-top:20px;
-    padding:8px 16px;
+input:focus{
+    outline:none;
+    border-color:#198754;
+}
+
+.save-btn{
+    margin-top:10px;
+    padding:10px 18px;
+    border:none;
+    border-radius:5px;
+    background:#198754;
+    color:white;
     cursor:pointer;
+}
+
+.save-btn:hover{
+    background:#157347;
+}
+
+.back-btn{
+    padding:8px 16px;
+    border:none;
+    border-radius:5px;
+    background:#0d6efd;
+    color:white;
+    cursor:pointer;
+}
+
+.back-btn:hover{
+    background:#0b5ed7;
 }
 
 </style>

@@ -1,105 +1,87 @@
 <template>
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
+  <div class="container">
 
-        <div class="card shadow">
+    <div class="register-box">
 
-          <div class="card-header text-center">
-            <h3>Student Registration</h3>
-          </div>
+      <h2>Student Registration</h2>
+      <p class="subtitle">Create your student account</p>
 
-          <div class="card-body">
+      <div v-if="message" class="success">
+        {{ message }}
+      </div>
 
-            <div
-              v-if="message"
-              class="alert alert-success"
-            >
-              {{ message }}
-            </div>
+      <div v-if="error" class="error">
+        {{ error }}
+      </div>
 
-            <div
-              v-if="error"
-              class="alert alert-danger"
-            >
-              {{ error }}
-            </div>
+      <form @submit.prevent="registerStudent">
 
-            <form @submit.prevent="registerStudent">
-
-              <div class="mb-3">
-                <label>Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="student.name"
-                  required
-                />
-              </div>
-
-              <div class="mb-3">
-                <label>Email</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  v-model="student.email"
-                  required
-                />
-              </div>
-
-              <div class="mb-3">
-                <label>Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  v-model="student.password"
-                  required
-                />
-              </div>
-
-              <div class="mb-3">
-                <label>Education</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="student.education"
-                  required
-                />
-              </div>
-
-              <div class="mb-3">
-                <label>Skills</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="student.skills"
-                />
-              </div>
-
-              <div class="mb-3">
-                <label>Resume Link</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="student.resume"
-                />
-              </div>
-
-              <button
-                class="btn btn-success w-100"
-                type="submit"
-              >
-                Register
-              </button>
-
-            </form>
-
-          </div>
-
+        <div class="form-group">
+          <label>Name</label>
+          <input
+            type="text"
+            v-model="student.name"
+            placeholder="Enter your name"
+            required
+          >
         </div>
 
-      </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input
+            type="email"
+            v-model="student.email"
+            placeholder="Enter your email"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            v-model="student.password"
+            placeholder="Enter your password"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Education</label>
+          <input
+            type="text"
+            v-model="student.education"
+            placeholder="B.Tech, BCA, MCA..."
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Skills</label>
+          <input
+            type="text"
+            v-model="student.skills"
+            placeholder="HTML, CSS, JavaScript..."
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Resume Link</label>
+          <input
+            type="text"
+            v-model="student.resume"
+            placeholder="Resume URL"
+          >
+        </div>
+
+        <button type="submit">
+          Register
+        </button>
+
+      </form>
+
     </div>
+
   </div>
 </template>
 
@@ -127,7 +109,7 @@ export default {
 
   methods: {
     async registerStudent() {
-      this.message = ""; //this will reset message again 
+      this.message = "";
       this.error = "";
 
       try {
@@ -149,7 +131,6 @@ export default {
         }, 1500);
 
       } catch (err) {
-
         this.error =
           err.response?.data?.message ||
           "Registration Failed";
@@ -158,3 +139,87 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.container {
+  min-height: 100vh;
+  background: #f4f6f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+.register-box {
+  width: 450px;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+input:focus {
+  outline: none;
+  border-color: #198754;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: #198754;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #157347;
+}
+
+.success {
+  background: #d1e7dd;
+  color: #0f5132;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.error {
+  background: #f8d7da;
+  color: #842029;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+</style>

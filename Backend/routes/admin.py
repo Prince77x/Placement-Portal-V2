@@ -1,13 +1,14 @@
-from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, jsonify, request
 from models import Student, Admin, Company, db, Job, Application
 from cache import cache
+from utils import role_required
+from flask_jwt_extended import get_jwt_identity
 
 admin = Blueprint('admin', __name__)
 
 
 @admin.route("/api/admin/dashboard", methods=["GET"])
-@jwt_required()
+@role_required("admin")
 def admin_dashboard():
 
     current_user = get_jwt_identity()
@@ -88,7 +89,7 @@ def admin_dashboard():
 
 # Dashboard stats
 @admin.route("/api/admin/stats", methods=["GET"])
-@jwt_required()
+@role_required("admin")
 def admin_stats():
 
     total_students = Student.query.count()
@@ -106,7 +107,7 @@ def admin_stats():
 
 # View one drive/job with its applications
 @admin.route("/api/admin/job/<int:id>", methods=["GET"])
-@jwt_required()
+@role_required("admin")
 def admin_drive_details(id):
 
     job = Job.query.get_or_404(id)
@@ -141,7 +142,7 @@ def admin_drive_details(id):
 
 # View one application in detail
 @admin.route("/api/admin/application/<int:id>", methods=["GET"])
-@jwt_required()
+@role_required("admin")
 def admin_application_details(id):
 
     application = Application.query.get_or_404(id)
@@ -167,7 +168,7 @@ def admin_application_details(id):
 
 # Approve company
 @admin.route("/api/company/<int:id>/approve", methods=["PUT"])
-@jwt_required()
+@role_required("admin")
 def approve_company(id):
 
     company = Company.query.get_or_404(id)
@@ -181,7 +182,7 @@ def approve_company(id):
 
 # Blacklist company
 @admin.route("/api/company/<int:id>/blacklist", methods=["PUT"])
-@jwt_required()
+@role_required("admin")
 def blacklist_company(id):
 
     company = Company.query.get_or_404(id)
@@ -195,7 +196,7 @@ def blacklist_company(id):
 
 # Activate company
 @admin.route("/api/company/<int:id>/activate", methods=["PUT"])
-@jwt_required()
+@role_required("admin")
 def activate_company(id):
 
     company = Company.query.get_or_404(id)
@@ -209,7 +210,7 @@ def activate_company(id):
 
 # Remove company
 @admin.route("/api/company/<int:id>/remove", methods=["DELETE"])
-@jwt_required()
+@role_required("admin")
 def remove_company(id):
 
     company = Company.query.get_or_404(id)
@@ -227,7 +228,7 @@ def remove_company(id):
 
 # Blacklist student
 @admin.route("/api/student/<int:id>/blacklist", methods=["PUT"])
-@jwt_required()
+@role_required("admin")
 def blacklist_student(id):
 
     student = Student.query.get_or_404(id)
@@ -241,7 +242,7 @@ def blacklist_student(id):
 
 # Activate student
 @admin.route("/api/student/<int:id>/activate", methods=["PUT"])
-@jwt_required()
+@role_required("admin")
 def activate_student(id):
 
     student = Student.query.get_or_404(id)
@@ -255,7 +256,7 @@ def activate_student(id):
 
 # Remove student
 @admin.route("/api/student/<int:id>/remove", methods=["DELETE"])
-@jwt_required()
+@role_required("admin")
 def remove_student(id):
 
     student = Student.query.get_or_404(id)
@@ -273,7 +274,7 @@ def remove_student(id):
 
 # Approve job posting
 @admin.route("/api/job/<int:id>/approve", methods=["PUT"])
-@jwt_required()
+@role_required("admin")
 def approve_job(id):
 
     job = Job.query.get_or_404(id)
@@ -287,7 +288,7 @@ def approve_job(id):
 
 # Remove job posting
 @admin.route("/api/job/<int:id>/remove", methods=["DELETE"])
-@jwt_required()
+@role_required("admin")
 def remove_job(id):
 
     job = Job.query.get_or_404(id)
@@ -305,7 +306,7 @@ def remove_job(id):
 
 # Mark drive as complete
 @admin.route("/api/job/<int:id>/complete", methods=["PUT"])
-@jwt_required()
+@role_required("admin")
 def complete_drive(id):
 
     job = Job.query.get_or_404(id)
@@ -319,7 +320,7 @@ def complete_drive(id):
 
 # Search
 @admin.route("/api/admin/search")
-@jwt_required()
+@role_required("admin")
 @cache.cached(timeout=60, query_string=True)
 def search():
 

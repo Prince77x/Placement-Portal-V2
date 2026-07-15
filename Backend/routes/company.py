@@ -1,12 +1,13 @@
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity
 from flask import Blueprint, jsonify, request
 from models import Company, Job, Application, db
+from utils import role_required
 
 company = Blueprint('company', __name__)
 
 
 @company.route("/api/company/dashboard", methods=["GET"])
-@jwt_required()
+@role_required("company")
 def company_dashboard():
 
     current_user = get_jwt_identity()
@@ -41,7 +42,7 @@ def company_dashboard():
 
 # Post a new job / drive
 @company.route("/api/company/job", methods=["POST"])
-@jwt_required()
+@role_required("company")
 def post_job():
 
     current_user = get_jwt_identity()
@@ -72,7 +73,7 @@ def post_job():
 
 # Mark a drive as complete/closed
 @company.route("/api/company/job/<int:id>/complete", methods=["PUT"])
-@jwt_required()
+@role_required("company")
 def mark_complete(id):
 
     job = Job.query.get_or_404(id)
@@ -86,7 +87,7 @@ def mark_complete(id):
 
 # Reopen a closed drive
 @company.route("/api/company/job/<int:id>/reopen", methods=["PUT"])
-@jwt_required()
+@role_required("company")
 def reopen_drive(id):
 
     job = Job.query.get_or_404(id)
@@ -100,7 +101,7 @@ def reopen_drive(id):
 
 # View applicants for a job
 @company.route("/api/company/job/<int:id>/applicants", methods=["GET"])
-@jwt_required()
+@role_required("company")
 def view_applicants(id):
 
     job = Job.query.get_or_404(id)
@@ -133,7 +134,7 @@ def view_applicants(id):
 
 # Shortlist an applicant
 @company.route("/api/company/application/<int:id>/shortlist", methods=["PUT"])
-@jwt_required()
+@role_required("company")
 def shortlist_applicant(id):
 
     application = Application.query.get_or_404(id)
@@ -147,7 +148,7 @@ def shortlist_applicant(id):
 
 # Reject an applicant
 @company.route("/api/company/application/<int:id>/reject", methods=["PUT"])
-@jwt_required()
+@role_required("company")
 def reject_applicant(id):
 
     application = Application.query.get_or_404(id)
@@ -161,7 +162,7 @@ def reject_applicant(id):
 
 # Select an applicant (final)
 @company.route("/api/company/application/<int:id>/select", methods=["PUT"])
-@jwt_required()
+@role_required("company")
 def select_applicant(id):
 
     application = Application.query.get_or_404(id)
