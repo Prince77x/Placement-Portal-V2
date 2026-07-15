@@ -1,6 +1,7 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, jsonify, request
 from models import Student, Company, Job, Application, db
+from cache import cache
 
 student = Blueprint('student', __name__)
 
@@ -83,6 +84,7 @@ def company_detail(id):
 # Search / list job postings
 @student.route("/api/student/jobs", methods=["GET"])
 @jwt_required()
+@cache.cached(timeout=60, query_string=True)
 def list_jobs():
 
     query = request.args.get("q", "")

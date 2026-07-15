@@ -10,6 +10,9 @@ from routes.admin import admin
 from routes.company import company
 from routes.student import student
 from routes.export import export
+from cache import cache
+
+ 
 
 app = Flask(__name__)
 CORS(app,origins=["http://localhost:8080"])
@@ -18,6 +21,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config["JWT_SECRET_KEY"] = "my-super-secret-jwt-key"
 print(app.config.get("JWT_SECRET_KEY"))
 app.config.from_object(config)
+
+# cache configurations 
+app.config["CACHE_TYPE"] = "RedisCache"
+app.config["CACHE_REDIS_URL"] = "redis://localhost:6379/1"
+app.config["CACHE_DEFAULT_TIMEOUT"] = 60  # seconds
+
+cache.init_app(app)
 
 # Initializing 
 jwt.init_app(app) # jwt token with flask 

@@ -1,6 +1,7 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, jsonify, request
 from models import Student, Admin, Company, db, Job, Application
+from cache import cache
 
 admin = Blueprint('admin', __name__)
 
@@ -319,6 +320,7 @@ def complete_drive(id):
 # Search
 @admin.route("/api/admin/search")
 @jwt_required()
+@cache.cached(timeout=60, query_string=True)
 def search():
 
     query = request.args.get("q", "")
